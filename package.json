@@ -1,0 +1,27 @@
+{
+  "name": "hzzly_r",
+  "version": "1.0.1",
+  "description": "",
+  "main": "index.js",
+  "bin": {
+    "hzzly_r": "bin/hzzly_r",
+    "hzzly_r-init": "bin/hzzly_r-init"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "hjingren@aliyun.com",
+  "license": "MIT",
+  "dependencies": {
+    "chalk": "^2.3.0",
+    "commander": "^2.11.0",
+    "download-git-repo": "^1.0.1",
+    "fs": "^0.0.1-security",
+    "inquirer": "^4.0.0",
+    "moment": "^2.19.1",
+    "ora": "^1.3.0",
+    "path": "^0.12.7",
+    "rimraf": "^2.6.2",
+    "user-home": "^2.0.0"
+  }
+}

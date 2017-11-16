@@ -1,0 +1,44 @@
+#!/usr/bin/env node
+
+const program = require('commander');
+const version = require('../package.json').version;
+
+if (process.argv.slice(2).join('') === '-v') { // [ '/usr/local/Cellar/node/8.6.0/bin/node', '/usr/local/bin/hzzly_r', '-v' ]
+  console.log(`hzzly_r: ${version}`);
+  return;
+}
+
+program
+  .version(version)
+  .usage('<command> [options]')
+  .command('init', 'generate a new project from a template')
+  // .on('--help', printHelp)
+  .parse(process.argv)
+
+// require('commander')
+//   .version(require('../package').version)
+//   .usage('<command> [options]')
+//   .command('init', 'generate a new project from a template')
+//   // .command('list', 'list available official templates')
+//   // .command('build', 'prototype a new project')
+//   .parse(process.argv)
+
+// const program = require('commander');
+// const path = require('path');
+// const version = require('../package.json').version;
+
+
+// program
+//   .version(version)
+//   .usage('<command> [options]')
+//   .on('--help', printHelp)
+//   // .command('init [dir]')
+//   // .description('init a blog')
+//   // .action(require('../lib/init'))
+
+// program
+//   .command('init [dir]')
+//   .description('init a blog')
+//   .action(require('../lib/init'))
+
+// program.parse(process.argv);
