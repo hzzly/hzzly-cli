@@ -1,44 +1,71 @@
 #!/usr/bin/env node
 
-const program = require('commander');
-const version = require('../package.json').version;
+const program = require("commander");
+const version = require("../package.json").version;
+const chalk = require("chalk");
 
-if (process.argv.slice(2).join('') === '-v') { // [ '/usr/local/Cellar/node/8.6.0/bin/node', '/usr/local/bin/hzzly_r', '-v' ]
-  console.log(`hzzly_r: ${version}`);
+if (process.argv.slice(2).join("") === "-v") {
+  // [ '/usr/local/Cellar/node/8.6.0/bin/node', '/usr/local/bin/hzzly_r', '-v' ]
+  console.log(version);
   return;
 }
-
-program
-  .version(version)
-  .usage('<command> [options]')
-  .command('init', 'generate a new project from a template')
-  // .on('--help', printHelp)
-  .parse(process.argv)
-
-// require('commander')
-//   .version(require('../package').version)
-//   .usage('<command> [options]')
-//   .command('init', 'generate a new project from a template')
-//   // .command('list', 'list available official templates')
-//   // .command('build', 'prototype a new project')
-//   .parse(process.argv)
-
-// const program = require('commander');
-// const path = require('path');
-// const version = require('../package.json').version;
-
 
 // program
 //   .version(version)
 //   .usage('<command> [options]')
-//   .on('--help', printHelp)
-//   // .command('init [dir]')
-//   // .description('init a blog')
-//   // .action(require('../lib/init'))
+//   .command('init', 'generate a new project from a template')
+//   .parse(process.argv)
+
+program
+  .version(version)
+  .command("init [dir]")
+  .description("init a blog")
+  .action(require("../lib/init"));
+
+program
+  .command("new <name>")
+  .description("create a new post")
+  .action(require("../lib/new.js"));
+
+program
+  .command("server")
+  .description("preview the blog by running a local server")
+  .action(require("../lib/preview.js"));
 
 // program
-//   .command('init [dir]')
-//   .description('init a blog')
-//   .action(require('../lib/init'))
+//   .command("build [dir]")
+//   .description("build the blog")
+//   .option("-o, --output <dir>", "render blog to html")
+//   .action(require("../lib/build"));
 
-// program.parse(process.argv);
+program
+  .command("page <name>")
+  .description("create a new page")
+  .action(require("../lib/page.js"));
+
+program.on("--help", () => {
+  console.log("  Examples:");
+  console.log();
+  console.log(
+    chalk.gray("    # init a blog")
+  );
+  console.log("    $ hzzly_r init blog");
+  console.log();
+  console.log(
+    chalk.gray("    # create a new post")
+  );
+  console.log("    $ hzzly_r new post");
+  console.log();
+  console.log(
+    chalk.gray("    # preview the blog by running a local server")
+  );
+  console.log("    $ hzzly_r server");
+  console.log();
+  console.log(
+    chalk.gray("    # create a new page")
+  );
+  console.log("    $ hzzly_r page resume");
+  console.log();
+});
+
+program.parse(process.argv);
