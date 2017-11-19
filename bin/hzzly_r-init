@@ -1,5 +1,9 @@
 #!/usr/bin/env node
 
+// Commander是一个轻量级，富有表现力，以及用于强大的命令行框架的node.js
+
+// 指定从PATH环境变量中来查找node解释器的位置，因此只要环境变量中存在，该脚本即可执行
+
 // const fse = require("fs-extra");
 const program = require("commander");
 const path = require("path");
@@ -28,7 +32,7 @@ program.on("--help", () => {
 });
 
 function help() {
-  program.parse(process.argv);
+  program.parse(process.argv);  // 解析
   if (program.args.length < 1) return program.help();
 }
 help();
