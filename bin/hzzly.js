@@ -1,110 +1,19 @@
 #!/usr/bin/env node
 
+// Commander是一个轻量级，富有表现力，以及用于强大的命令行框架的node.js
+
+// 指定从PATH环境变量中来查找node解释器的位置，因此只要环境变量中存在，该脚本即可执行
+
 const program = require('commander');
 const inquirer = require('inquirer');
 const chalk = require("chalk");
-const path = require("path");
-const fs = require('fs-extra');
-const boxen = require('boxen');
-const updateNotifier = require('update-notifier');
 const pkg = require('../package.json');
-
-const BOXEN_OPTS = {
-  padding: 1,
-  margin: 1,
-  align: 'center',
-  borderColor: '#678491',
-  borderStyle: 'round'
-};
+const CliUtil = require('../lib/util.js');
+const util = new CliUtil(program);
 
 if (process.argv.slice(2).join('') === '-v') {
   console.log(`hzzly-cli: ${pkg.version}`);
   return;
-}
-
-function init() {
-  const messages = [];
-  messages.push(
-    `🔥  Welcome to use hzzly-cli ${chalk.grey(`v${pkg.version}`)}`
-  );
-  messages.push(
-    chalk.grey('https://github.com/hzzly/hzzly-cli')
-  );
-  messages.push(
-    chalk.grey('https://www.npmjs.com/package/hzzly-cli')
-  )
-  console.log(boxen(messages.join('\n'), BOXEN_OPTS));
-  checkVersion()
-}
-
-/**
- * 检查版本信息
- */
-function checkVersion() {
-  console.log();
-  console.log('🛠️  Checking your hzzly-cli version...');
-
-  let checkResult = false;
-  const notifier = updateNotifier({
-    pkg,
-    updateCheckInterval: 0
-  });
-
-  const update = notifier.update;
-  if (update) {
-    const messages = [];
-    messages.push(`Update available ${chalk.grey(update.current)} → ${chalk.green(update.latest)}`)
-    messages.push(`Run ${chalk.cyan(`npm i -g ${pkg.name}`)} to update`)
-    console.log(boxen(messages.join('\n'), { ...BOXEN_OPTS, borderColor: '#fae191' }));
-    console.log('🛠️  Finish checking your hzzly-cli. CAUTION ↑↑', '⚠️');
-  }
-  else {
-    checkResult = true;
-    console.log('🛠️  Finish checking your hzzly-cli. OK', chalk.green('✔'));
-  }
-  return checkResult;
-}
-
-function checkAppName(appName) {
-  const to = path.resolve(appName);
-  console.log(path.resolve(appName));
-  console.log(fs.pathExistsSync(to));
-  if (appName === '.') {
-    checkEmpty(to)
-  } else if (checkExist(to)) {
-    inquirer.prompt([{
-      type: 'confirm',
-      message: 'Target directory exists. Continue?',
-      name: 'ok',
-    }]).then(answers => {
-      if (answers.ok) {
-        checkEmpty(to)
-        // downloadAndGenerate('hzzly/webpack-template', tmp)
-      }
-    })
-  } else {
-    console.log('downloadAndGenerate')
-  }
-}
-
-function checkExist(path) {
-  return fs.pathExistsSync(path);
-}
-
-function checkEmpty(path) {
-  const dirFiles = fs.readdirSync(path);
-  if (dirFiles.length > 0) {
-    inquirer.prompt([{
-      type: 'confirm',
-      name: 'ok',
-      message: 'Target directory is not empty and will delete. Continue?',
-    }]).then(answers => {
-      if (answers.ok) {
-        console.log('downloadAndGenerate')
-        // downloadAndGenerate('hzzly/webpack-template', tmp)
-      }
-    })
-  }
 }
 
 program
@@ -133,10 +42,10 @@ program
   .command('create')
   .description('generate a new project from a template')
   .action(function () {
-    init();
+    util.initializing(pkg);
     const appName = program.args[0];
     if (typeof appName === 'string') {
-      checkAppName(appName);
+      util.checkAppName(appName);
     } else {
       const opts = [{
         type: 'input',
@@ -152,7 +61,7 @@ program
 
       inquirer.prompt(opts).then(({ appName }) => {
         if (appName) {
-          checkAppName(appName);
+          util.checkAppName(appName);
         }
       })
     }
@@ -161,7 +70,6 @@ program
 program
   .command('check')
   .description('check test')
-  // .on('--help', printHelp)
   .action((checkname, option) => {
     // 获得了参数，可以在这里做响应的业务处理
     var prompList = [
@@ -264,4 +172,18 @@ program
       console.log(answers);
     })
   })
-program.parse(process.argv)
+
+/**
+ * error on unknown commands
+ */
+program.on('command:*', function () {
+  console.error('Invalid command: %s\n', program.args.join(' '));
+  program.help();
+  process.exit(1);
+});
+
+function help() {
+  program.parse(process.argv);  // 解析
+  if (program.args.length < 1) return program.help();
+}
+help();
