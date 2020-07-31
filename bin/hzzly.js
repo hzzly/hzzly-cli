@@ -18,7 +18,7 @@ if (process.argv.slice(2).join('') === '-v') {
 
 program
   .version(pkg.version)
-  .usage('<command> [options] <app-name> [folder-name]')
+  .usage('<command> [options] <app-name>')
   .option("-c, --clone", "use git clone")
   .on("--help", () => {
     console.log();
@@ -41,9 +41,9 @@ program
 program
   .command('create')
   .description('generate a new project from a template')
-  .action(function () {
+  .action((appName) => {
     util.initializing(pkg);
-    const appName = program.args[0];
+    // const appName = program.args[0];
     if (typeof appName === 'string') {
       util.checkAppName(appName);
     } else {
@@ -72,7 +72,7 @@ program
   .description('check test')
   .action((checkname, option) => {
     // 获得了参数，可以在这里做响应的业务处理
-    var prompList = [
+    const opts = [
       {
         type: 'input',
         message: '姓名',
@@ -100,24 +100,24 @@ program
         }
       }, {
         type: 'list',
-        message: '欢迎来到本次考核，请选择学历：',
+        message: '欢迎来到本次考核，请选择语言：',
         name: 'eductionBg',
         choices: [
-          "大专",
-          "本科",
-          "本科以上"
+          "js",
+          "java",
+          "php"
         ],
-        filter: val => {//将选择的内容后面加学历
-          return val + '学历'
+        filter: val => {
+          // 将选择的内容后面加语言
+          return val + '语言'
         }
       }, {
         type: 'rawlist',
-        message: '请选择你爱玩的游戏：',
+        message: '请选择你喜欢逛的社区：',
         name: 'game',
         choices: [
-          "LOL",
-          "DOTA",
-          "PUBG"
+          "掘金",
+          "github",
         ]
       }, {
         type: 'expand',
@@ -163,12 +163,12 @@ program
         ]
       }, {
         type: 'password',
-        message: '请输入你的游戏密码：',
+        message: '请输入你的密码：',
         name: 'pwd'
       }
-
     ]
-    inquirer.prompt(prompList).then(answers => {
+     
+    inquirer.prompt(opts).then(answers=>{
       console.log(answers);
     })
   })
